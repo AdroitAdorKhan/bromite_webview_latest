@@ -3,8 +3,17 @@ MANUFACTER=$(getprop ro.product.manufacturer)
 ABI=$(grep_prop ro.product.cpu.abi)
 STATUS=0
 
-bromite() {
-	BROMITE_VERSION=106.0.5249.163
+
+#github release
+getLatestRelease() {
+    curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
+    grep '"tag_name":' |                                            # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+}
+
+bromite() { 
+	BROMITE_VERSION=$(getLatestRelease "bromite/bromite")
+    ui_print "  Version: v.${BROMITE_VERSION}"
 	BROMITE_DESCRIPTION_NAME="Bromite"
 	BROMITE_PACKAGE_NAME="org.bromite.webview"
 	BROMITE_APK_FILE="BromiteWebview.apk"
